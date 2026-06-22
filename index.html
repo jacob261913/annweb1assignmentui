@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Obesity Prediction AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Obesity Prediction AI Portal</h1>
+
+    <div class="card">
+        <div class="form-grid">
+            
+            <!-- Demographic Attributes -->
+            <div class="form-group">
+                <label for="Age">Age (Years)</label>
+                <input id="Age" type="number" step="0.1" value="23" placeholder="e.g. 23">
+            </div>
+
+            <div class="form-group">
+                <label for="Gender">Gender</label>
+                <select id="Gender">
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Height">Height (Meters)</label>
+                <input id="Height" type="number" step="0.01" value="1.72" placeholder="e.g. 1.72">
+            </div>
+
+            <div class="form-group">
+                <label for="Weight">Weight (Kilograms)</label>
+                <input id="Weight" type="number" step="0.1" value="68" placeholder="e.g. 68">
+            </div>
+
+            <!-- Medical/Family Background -->
+            <div class="form-group">
+                <label for="family_history_with_overweight">Family Overweight History?</label>
+                <select id="family_history_with_overweight">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="FAVC">Eat High Caloric Foods Frequently?</label>
+                <select id="FAVC">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+
+            <!-- Eating Habits Indicators -->
+            <div class="form-group">
+                <label for="FCVC">Vegetable Intake Frequency (Score 1 to 3)</label>
+                <input id="FCVC" type="number" step="0.1" value="2.0" min="1" max="3" placeholder="1=Never, 3=Always">
+            </div>
+
+            <div class="form-group">
+                <label for="NCP">Main Meals Per Day (1 to 4)</label>
+                <input id="NCP" type="number" step="0.1" value="3.0" min="1" max="4" placeholder="Number of meals">
+            </div>
+
+            <div class="form-group">
+                <label for="CAEC">Eat Food Between Meals?</label>
+                <select id="CAEC">
+                    <option value="Sometimes">Sometimes</option>
+                    <option value="Frequently">Frequently</option>
+                    <option value="Always">Always</option>
+                    <option value="no">No, never</option>
+                </select>
+            </div>
+
+            <!-- Lifestyle Habits Indicators -->
+            <div class="form-group">
+                <label for="SMOKE">Do You Smoke?</label>
+                <select id="SMOKE">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="CH2O">Daily Water Intake (Score 1 to 3)</label>
+                <input id="CH2O" type="number" step="0.1" value="2.0" min="1" max="3" placeholder="1=Less than 1L, 3=Over 2L">
+            </div>
+
+            <div class="form-group">
+                <label for="SCC">Monitor Your Daily Calories?</label>
+                <select id="SCC">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="FAF">Physical Activity (Score 0 to 3)</label>
+                <input id="FAF" type="number" step="0.1" value="1.0" min="0" max="3" placeholder="0=None, 3=High Activity">
+            </div>
+
+            <div class="form-group">
+                <label for="TUE">Tech Screen Time Daily (Score 0 to 2)</label>
+                <input id="TUE" type="number" step="0.1" value="1.0" min="0" max="2" placeholder="0=Low, 2=Very High">
+            </div>
+
+            <div class="form-group">
+                <label for="CALC">How Often Do You Drink Alcohol?</label>
+                <select id="CALC">
+                    <option value="no">Never / No</option>
+                    <option value="Sometimes">Sometimes</option>
+                    <option value="Frequently">Frequently</option>
+                    <option value="Always">Always</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="MTRANS">Primary Mode of Transportation</label>
+                <select id="MTRANS">
+                    <option value="Public_Transportation">Public Transportation</option>
+                    <option value="Walking">Walking</option>
+                    <option value="Automobile">Automobile</option>
+                    <option value="Motorbike">Motorbike</option>
+                    <option value="Bike">Bicycle</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="submit-btn" onclick="predict()">Run Neural Network Prediction</button>
+    </div>
+
+    <!-- Results Display -->
+    <div id="result"></div>
+</div>
+
+<script>
+async function predict(){
+    const payload = {
+        Age: parseFloat(document.getElementById("Age").value),
+        Height: parseFloat(document.getElementById("Height").value),
+        Weight: parseFloat(document.getElementById("Weight").value),
+        Gender: document.getElementById("Gender").value,
+        family_history_with_overweight: document.getElementById("family_history_with_overweight").value,
+        FAVC: document.getElementById("FAVC").value,
+        FCVC: parseFloat(document.getElementById("FCVC").value),
+        NCP: parseFloat(document.getElementById("NCP").value),
+        CAEC: document.getElementById("CAEC").value,
+        SMOKE: document.getElementById("SMOKE").value,
+        CH2O: parseFloat(document.getElementById("CH2O").value),
+        SCC: document.getElementById("SCC").value,
+        FAF: parseFloat(document.getElementById("FAF").value),
+        TUE: parseFloat(document.getElementById("TUE").value),
+        CALC: document.getElementById("CALC").value,
+        MTRANS: document.getElementById("MTRANS").value
+    };
+
+    document.getElementById("result").innerHTML = "<div class='loading'>Analyzing Metrics via ANN...</div>";
+
+    try {
+        const response = await fetch("/api/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.status === "success") {
+            const cleanLabel = data.prediction.replace(/[\[\]']/g, '').replace(/_/g, ' ');
+            document.getElementById("result").innerHTML = `
+                <div class="result-card">
+                    <h2>${cleanLabel}</h2>
+                    <p>Model Evaluation Confidence: <strong>${data.confidence}%</strong></p>
+                </div>
+            `;
+        } else {
+            document.getElementById("result").innerHTML = `
+                <div class="error-card">Prediction Failed: ${data.message}</div>
+            `;
+        }
+    } catch(err) {
+        document.getElementById("result").innerHTML = `
+            <div class="error-card">Server Connection Error: ${err.message}</div>
+        `;
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(
+135deg,
+#0f172a,
+#1e293b,
+#2563eb
+);
+overflow:auto;
+}
+
+.container{
+width:90%;
+max-width:800px;
+padding:20px;
+}
+
+h1{
+text-align:center;
+color:white;
+margin-bottom:20px;
+animation:fadeIn 1s ease;
+}
+
+.card{
+backdrop-filter:blur(15px);
+background:rgba(255,255,255,.1);
+padding:25px;
+border-radius:20px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+box-shadow:0 8px 32px rgba(0,0,0,.3);
+animation:slideUp .8s ease;
+}
+
+input,select{
+padding:12px;
+border:none;
+outline:none;
+border-radius:10px;
+}
+
+button{
+grid-column:span 2;
+padding:14px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#22c55e;
+color:white;
+font-size:16px;
+font-weight:bold;
+transition:.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.result-card{
+margin-top:20px;
+padding:20px;
+text-align:center;
+border-radius:20px;
+background:white;
+animation:pop .5s ease;
+}
+
+.loading{
+color:white;
+text-align:center;
+padding:20px;
+animation:pulse 1s infinite;
+}
+
+@keyframes slideUp{
+from{
+transform:translateY(50px);
+opacity:0;
+}
+to{
+transform:translateY(0);
+opacity:1;
+}
+}
+
+@keyframes pop{
+0%{
+transform:scale(.5);
+opacity:0;
+}
+100%{
+transform:scale(1);
+opacity:1;
+}
+}
+
+@keyframes pulse{
+50%{
+opacity:.4;
+}
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+}
+to{
+opacity:1;
+}
+}
